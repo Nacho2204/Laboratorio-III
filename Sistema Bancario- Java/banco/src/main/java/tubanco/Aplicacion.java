@@ -1,10 +1,11 @@
 package tubanco;
 
 
-import tubanco.model.Menu;
+import tubanco.presentation.inputs.Menu;
 
 
-public class Main {
+public class Aplicacion
+ {
     public static void main(String[] args) {
         Menu menu = new Menu();
         menu.menuPrincipal();

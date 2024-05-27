@@ -1,4 +1,4 @@
-package tubanco.Inputs;
+package tubanco.presentation.inputs;
 
 import java.time.LocalDate;
 import java.util.Scanner;

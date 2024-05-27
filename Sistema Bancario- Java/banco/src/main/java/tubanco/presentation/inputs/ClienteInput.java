@@ -1,4 +1,4 @@
-package tubanco.Inputs;
+package tubanco.presentation.inputs;
 
 import java.util.Scanner;
 import tubanco.model.Cliente; 

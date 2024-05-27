@@ -1,15 +1,15 @@
-package tubanco.model;
+package tubanco.presentation.inputs;
 import java.util.Scanner;
 
-import tubanco.Inputs.ClienteInput;
-import tubanco.Inputs.CuentaBancariaInput;
+import tubanco.model.Cliente;
+import tubanco.model.CuentaBancaria;
 
-public class Menu {
+public class MenuInput {
     protected Scanner scanner;
     protected ClienteInput clienteInput;
     protected CuentaBancariaInput cuentaBancariaInput;
 
-    public Menu() {
+    public MenuInput() {
         this.scanner = new Scanner(System.in);
         this.clienteInput = new ClienteInput(scanner);
         this.cuentaBancariaInput = new CuentaBancariaInput(scanner);
