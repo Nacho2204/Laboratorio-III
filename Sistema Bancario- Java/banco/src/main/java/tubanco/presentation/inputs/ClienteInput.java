@@ -1,6 +1,8 @@
 package tubanco.presentation.inputs;
 
 import java.util.Scanner;
+
+import tubanco.conexion.ClienteDAO;
 import tubanco.model.Cliente; 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,15 +11,13 @@ import java.util.List;
 public class ClienteInput {
     protected static List<Cliente> clientes = new ArrayList<>();
     protected static Scanner scanner = new Scanner(System.in);
-    protected static int contadorIdentificadores = 0;
 
     public ClienteInput(Scanner scanner) {
-        this.scanner = scanner;
     }
     
 
-    public Cliente ingresarCliente(){
-        Cliente cliente= new Cliente(); 
+    public Cliente ingresarCliente() {
+        Cliente cliente = new Cliente(); 
 
         System.out.println("Ingrese el nombre del cliente: ");
         String nombre = scanner.nextLine();
@@ -26,10 +26,10 @@ public class ClienteInput {
         System.out.println("Ingrese el apellido del cliente: ");
         String apellido = scanner.nextLine();
         cliente.setApellido(apellido);
-        
+
         System.out.println("Ingrese el DNI del cliente: ");
         long dni = 0;
-        
+
         while (true) {
             if (scanner.hasNextLong()) {
                 dni = scanner.nextLong();
@@ -43,18 +43,16 @@ public class ClienteInput {
                 scanner.next(); 
             }
         }
-        
+
         cliente.setDni(dni);
-        
         scanner.nextLine(); 
 
         System.out.println("Ingrese el banco del cliente: ");
-        String banco=scanner.nextLine();
+        String banco = scanner.nextLine();
         cliente.setBanco(banco);
 
-        cliente.setIdentificador(contadorIdentificadores++);
-        cliente.setIdentificador(contadorIdentificadores);
-        System.out.println("El identificador del cliente es: " + cliente.getIdentificador());
+        System.out.println("Su identificador es: " + cliente.getDni());
+        cliente.setIdentificador(cliente.getDni());
 
         System.out.println("Ingrese la fecha de nacimiento del cliente (Formato: YYYY-MM-DD): ");
         LocalDate fechaNacimiento = null;
@@ -62,7 +60,6 @@ public class ClienteInput {
         while (!fechaValida) {
             try {
                 fechaNacimiento = LocalDate.parse(scanner.nextLine());
-                // Validar que el cliente tenga al menos 18 años
                 LocalDate fechaHoy = LocalDate.now();
                 LocalDate fechaMayorEdad = fechaHoy.minusYears(18);
                 if (fechaNacimiento.isBefore(fechaMayorEdad)) {
@@ -76,13 +73,18 @@ public class ClienteInput {
         }
         cliente.setFechaNacimiento(fechaNacimiento);
 
-        
-
-
-        System.out.println("La fecha de creacion de la cuenta es: " + LocalDate.now());
         cliente.setFechaAlta(LocalDate.now());
+        System.out.println("Su fecha de alta es: " + cliente.getFechaAlta());
 
+        System.out.println("Ingrese el tipo de persona del cliente (Juridica - Fisica): ");
+        String tipoPersona = scanner.nextLine();
+        cliente.setTipoPersona(tipoPersona);
+
+        System.out.println("Cliente creado exitosamente.\n");
         clientes.add(cliente);
+
+        ClienteDAO clienteDAO = new ClienteDAO();
+        clienteDAO.crearCliente(cliente);
 
         return cliente;
     }
@@ -98,9 +100,9 @@ public class ClienteInput {
         }
         if (clienteAEliminar != null) {
             clientes.remove(clienteAEliminar);
-            System.out.println("Cliente eliminado exitosamente.");
+            System.out.println("Cliente eliminado exitosamente.\n");
         } else {
-            System.out.println("No se encontró ningún cliente con el identificador especificado.");
+            System.out.println("No se encontró ningún cliente con el identificador especificado.\n");
         }
     }
 
@@ -223,14 +225,7 @@ public class ClienteInput {
     }
 
 
-    public static int getContadorIdentificadores() {
-        return contadorIdentificadores;
-    }
-
-
-    public static void setContadorIdentificadores(int contadorIdentificadores) {
-        ClienteInput.contadorIdentificadores = contadorIdentificadores;
-    } 
+    
     
     
  }

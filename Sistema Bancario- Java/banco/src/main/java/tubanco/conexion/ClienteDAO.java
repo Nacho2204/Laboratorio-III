@@ -1,55 +1,54 @@
 package tubanco.conexion;
 
-
 import tubanco.model.Cliente;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClienteDAO {
 
-    public List<Cliente> obtenerTodosClientes() {
-        List<Cliente> clientes = new ArrayList<>();
-        try {
-            Connection conexion = ConexionSQLite.obtenerConexion();
-            String query = "SELECT * FROM Cliente";
-            PreparedStatement statement = conexion.prepareStatement(query);
-            ResultSet result = statement.executeQuery();
-            while (result.next()) {
-                Cliente cliente = new Cliente();
-                cliente.setNombre(result.getString("Nombre"));
-                cliente.setApellido(result.getString("Apellido"));
-                cliente.setDni(result.getLong("DNI"));
-                clientes.add(cliente);
-            }
-            statement.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return clientes;
-    }
-
     public void crearCliente(Cliente cliente) {
+        Connection conexion = null;
+        PreparedStatement statement = null;
         try {
-            Connection conexion = ConexionSQLite.obtenerConexion();
-            String query = "INSERT INTO Cliente (Nombre, Apellido, DNI, Banco, FechaNacimiento, FechaAlta, TipoPersona) " +
+            conexion = ConexionSQLite.obtenerConexion();
+            conexion.setAutoCommit(false);
+            String query = "INSERT INTO Cliente (Nombre, Apellido, DNI, Banco, Fecha_de_nacimiento, Fecha_de_alta, Tipo_de_persona) " +
                            "VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement statement = conexion.prepareStatement(query);
+            statement = conexion.prepareStatement(query);
             statement.setString(1, cliente.getNombre());
             statement.setString(2, cliente.getApellido());
             statement.setLong(3, cliente.getDni());
             statement.setString(4, cliente.getBanco());
-            statement.setDate(5, java.sql.Date.valueOf(cliente.getFechaNacimiento()));
-            statement.setDate(6, java.sql.Date.valueOf(cliente.getFechaAlta()));
+            statement.setString(5, cliente.getFechaNacimiento().toString());
+            statement.setString(6, cliente.getFechaAlta().toString());
             statement.setString(7, cliente.getTipoPersona());
             statement.executeUpdate();
-            statement.close();
+            conexion.commit(); 
         } catch (SQLException e) {
             e.printStackTrace();
+            if (conexion != null) {
+                try {
+                    conexion.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conexion != null) {
+                try {
+                    conexion.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
-}
 }
