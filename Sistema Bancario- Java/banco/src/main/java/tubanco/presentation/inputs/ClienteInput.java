@@ -5,11 +5,8 @@ import java.util.Scanner;
 import tubanco.conexion.ClienteDAO;
 import tubanco.model.Cliente; 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ClienteInput {
-    protected static List<Cliente> clientes = new ArrayList<>();
     protected static Scanner scanner = new Scanner(System.in);
 
     public ClienteInput(Scanner scanner) {
@@ -81,7 +78,6 @@ public class ClienteInput {
         cliente.setTipoPersona(tipoPersona);
 
         System.out.println("Cliente creado exitosamente.\n");
-        clientes.add(cliente);
 
         ClienteDAO clienteDAO = new ClienteDAO();
         clienteDAO.crearCliente(cliente);
@@ -98,26 +94,25 @@ public class ClienteInput {
     }
 
     public void modificarCliente(int identificador, String atributo) {
-        Cliente clienteAModificar = null;
-        System.out.println("Ingrese el identificador del cliente y luego el atributo que desea modificar: ");
-    
+        ClienteDAO clienteDAO = new ClienteDAO();
+        Cliente clienteAModificar = clienteDAO.obtenerClientePorId(identificador);
+       
+
                 switch (atributo.toLowerCase()) {
+
                     case "nombre":
                         System.out.println("Ingrese el nuevo nombre del cliente: ");
                         String nuevoNombre = scanner.nextLine();
-                        clienteAModificar.setNombre(nuevoNombre);
+                        clienteDAO.modificarCliente(identificador, "Nombre", nuevoNombre);
                         break;
+
                     case "apellido":
                         System.out.println("Ingrese el nuevo apellido del cliente: ");
                         String nuevoApellido = scanner.nextLine();
-                        clienteAModificar.setApellido(nuevoApellido);
+                        clienteDAO.modificarCliente(identificador, "Apellido", nuevoApellido);
                         break;
-                    case "dni":
-                        System.out.println("Ingrese el nuevo DNI del cliente: ");
-                        long nuevoDNI = scanner.nextLong();
-                        clienteAModificar.setDni(nuevoDNI);
-                        break;
-                    case "fechaNacimiento":
+
+                    case "fechanacimiento":
                     LocalDate fechaNacimiento = null;
                     boolean fechaValida = false;
                     while (!fechaValida) {
@@ -135,9 +130,10 @@ public class ClienteInput {
                             System.out.println("Formato de fecha inválido. Ingrese la fecha en formato YYYY-MM-DD:");
                         }
                     }
-                    clienteAModificar.setFechaNacimiento(fechaNacimiento);
+                    clienteDAO.modificarCliente(identificador, "Fecha_de_nacimiento", fechaNacimiento.toString());
+
                     break;
-                    case "fechaAlta":
+                    case "fechaalta":
                     LocalDate fechaAlta = null;
                     boolean fechaValida2 = false;
                     while (!fechaValida2) {
@@ -155,42 +151,38 @@ public class ClienteInput {
                             System.out.println("Formato de fecha inválido. Ingrese la fecha en formato YYYY-MM-DD:");
                         }
                     }
-                    clienteAModificar.setFechaAlta(fechaAlta);
+                    clienteDAO.modificarCliente(identificador, "Fecha_de_alta", fechaAlta.toString());
                     break;
+
+                    case "banco":
+                        System.out.println("Ingrese el nuevo banco del cliente: ");
+                        String nuevoBanco = scanner.nextLine();
+                        clienteDAO.modificarCliente(identificador, "Banco", nuevoBanco);
+                        break;
+                    
+                    case "tipoPersona":
+                        System.out.println("Ingrese el nuevo tipo de persona del cliente: ");
+                        String nuevoTipoPersona = scanner.nextLine();
+                        clienteDAO.modificarCliente(identificador, "Tipo_de_persona", nuevoTipoPersona);
+                        break;
+
                     default:
                         System.out.println("Atributo no válido.");
                         break;
                 }
             }
-        } 
+        
     
     
     public void mostrarCliente(int identificador) {
-        for (Cliente cliente : clientes) {
-            System.out.println("Identificador: " + cliente.getIdentificador());
-            System.out.println("Nombre: " + cliente.getNombre());
-            System.out.println("Apellido: " + cliente.getApellido());
-            System.out.println("DNI: " + cliente.getDni());
-            System.out.println("Banco: " + cliente.getBanco());
-            System.out.println("Fecha de nacimiento: " + cliente.getFechaNacimiento());
-            System.out.println("Fecha de alta: " + cliente.getFechaAlta());
-            System.out.println("--------------------------------------");
-        }
+        
+        ClienteDAO clienteDAO = new ClienteDAO();
+        clienteDAO.mostrarCliente(identificador);
     }
 
     private boolean validarFormatoFecha(String fechaStr) {
         String regex = "^\\d{4}-\\d{2}-\\d{2}$";
         return fechaStr.matches(regex);
-    }
-
-
-    public static List<Cliente> getClientes() {
-        return clientes;
-    }
-
-
-    public static void setClientes(List<Cliente> clientes) {
-        ClienteInput.clientes = clientes;
     }
 
 

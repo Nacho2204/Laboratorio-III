@@ -57,7 +57,7 @@ public class MenuInput {
 
                     clienteInput.eliminarCliente();
                     break;
-                case 5:
+                 /*case 5:
                     System.out.println("Ingrese el identificador del cliente para asociar la cuenta bancaria: ");
                     int identificadorClienteCrearCuenta = scanner.nextInt();
                     scanner.nextLine();
@@ -79,7 +79,7 @@ public class MenuInput {
                         System.out.println("Cuenta bancaria no encontrada.");
                     }
                     break;
-                case 7:
+               case 7:
                 System.out.println("Ingrese el número de cuenta para consultar movimientos: ");
                 int numeroCuentaConsultar = scanner.nextInt();
                 scanner.nextLine();
@@ -108,23 +108,16 @@ public class MenuInput {
                 default:
                     System.out.println("ERROR, VOLVER A INTENTAR NUEVAMENTE");
                     break;
+            }*/ 
             }
 
         } while (opcion != 0);
     }
 
     // Método para obtener un cliente por su identificador
-    private Cliente obtenerClientePorIdentificador(int identificador) {
-        for (Cliente cliente : ClienteInput.getClientes()) {
-            if (cliente.getIdentificador() == identificador) {
-                return cliente;
-            }
-        }
-        return null;
-    }
 
     
-    private CuentaBancaria obtenerCuentaPorNumero(int numeroCuenta) {
+   /*  private CuentaBancaria obtenerCuentaPorNumero(int numeroCuenta) {
         for (Cliente cliente : ClienteInput.getClientes()) {
             for (CuentaBancaria cuenta : cliente.getCuentas()) {
                 if (cuenta.getNumeroCuenta() == numeroCuenta) {
@@ -134,7 +127,7 @@ public class MenuInput {
         }
         return null;
     }
-
+*/
     public Scanner getScanner() {
         return scanner;
     }
