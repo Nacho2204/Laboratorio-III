@@ -45,7 +45,7 @@ public class CuentaBancariaInput {
             }
         }
         cuenta.setFechaCreacion(fechaCreacion.atStartOfDay()); 
-
+        cuenta.setTitular(cliente);
         cliente.addCuenta(cuenta); 
 
         return cuenta;

@@ -14,9 +14,11 @@ public class CuentaBancaria {
     protected String nombre;
     protected LocalDateTime fechaCreacion;
     protected TipoCuenta tipoCuenta;
-    protected int balance;
+    protected int saldo;
     protected int numeroCuenta;
+    protected String moneda;
     private List<MovimientoCuenta> movimientos=new ArrayList<>();
+    private Cliente titular;
 
 
 
@@ -38,12 +40,12 @@ public class CuentaBancaria {
         return this;
     }
 
-    public int getBalance() {
-        return balance;
+    public int getSaldo() {
+        return saldo;
     }
 
-    public CuentaBancaria setBalance(int balance) {
-        this.balance = balance;
+    public CuentaBancaria setSaldo(int saldo) {
+        this.saldo = saldo;
         return this;
     }
 
@@ -81,5 +83,21 @@ public class CuentaBancaria {
 
     public void agregarMovimiento(MovimientoCuenta movimiento) {
         movimientos.add(movimiento);
+    }
+
+    public String getMoneda() {
+        return moneda;
+    }
+
+    public void setMoneda(String moneda) {
+        this.moneda = moneda;
+    }
+
+    public Cliente getTitular() {
+        return titular;
+    }
+
+    public void setTitular(Cliente titular) {
+        this.titular = titular;
     }
 }
