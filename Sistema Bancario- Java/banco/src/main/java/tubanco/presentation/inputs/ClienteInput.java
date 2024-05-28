@@ -89,37 +89,18 @@ public class ClienteInput {
         return cliente;
     }
 
-    public void eliminarCliente(int identificador) {
-        Cliente clienteAEliminar = null;
-        System.out.println("Ingrese el identificador del cliente que desea eliminar: ");
-        for (Cliente cliente : clientes) {
-            if (cliente.getIdentificador() == identificador) {
-                clienteAEliminar = cliente;
-                break;
-            }
-        }
-        if (clienteAEliminar != null) {
-            clientes.remove(clienteAEliminar);
-            System.out.println("Cliente eliminado exitosamente.\n");
-        } else {
-            System.out.println("No se encontró ningún cliente con el identificador especificado.\n");
-        }
+    public void eliminarCliente() {
+      ClienteDAO clienteDAO = new ClienteDAO();
+      System.out.println("Ingrese el identificador del cliente que desea eliminar: ");
+      int identificador = scanner.nextInt();
+      scanner.nextLine();
+      clienteDAO.borrarCliente(identificador);
     }
 
     public void modificarCliente(int identificador, String atributo) {
         Cliente clienteAModificar = null;
         System.out.println("Ingrese el identificador del cliente y luego el atributo que desea modificar: ");
-        for (Cliente cliente : clientes) {
-            if (cliente.getIdentificador() == identificador) {
-                clienteAModificar = cliente;
-                break;
-            }
-        }
     
-        if (clienteAModificar != null) {
-            if (atributo.equalsIgnoreCase("identificador")|| atributo.equalsIgnoreCase("banco")) {
-                System.out.println("No se puede modificar el identificador, ni el banco!!");
-            } else {
                 switch (atributo.toLowerCase()) {
                     case "nombre":
                         System.out.println("Ingrese el nuevo nombre del cliente: ");
@@ -181,10 +162,8 @@ public class ClienteInput {
                         break;
                 }
             }
-        } else {
-            System.out.println("No se encontró ningún cliente con el identificador especificado.");
-        }
-    }
+        } 
+    
     
     public void mostrarCliente(int identificador) {
         for (Cliente cliente : clientes) {

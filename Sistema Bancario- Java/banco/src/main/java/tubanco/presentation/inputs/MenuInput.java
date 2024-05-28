@@ -54,10 +54,8 @@ public class MenuInput {
                 clienteInput.mostrarCliente(identificadorClienteMostrar);
                     break;
                 case 4:
-                    System.out.println("Ingrese el identificador del cliente que desea eliminar: ");
-                    int identificadorClienteEliminar = scanner.nextInt();
-                    scanner.nextLine();
-                    clienteInput.eliminarCliente(identificadorClienteEliminar);
+
+                    clienteInput.eliminarCliente();
                     break;
                 case 5:
                     System.out.println("Ingrese el identificador del cliente para asociar la cuenta bancaria: ");
