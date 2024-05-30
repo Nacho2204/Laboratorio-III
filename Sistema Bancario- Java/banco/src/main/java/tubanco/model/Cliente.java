@@ -1,28 +1,16 @@
 package tubanco.model;
 
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Cliente extends Persona{
    protected String banco;
    protected LocalDate fechaAlta;
-   protected Set<CuentaBancaria> cuentas = new HashSet<>();
    protected long identificador;
    protected String tipoPersona;
    
    public Cliente(){}
 
-public void agregarCuenta(CuentaBancaria cuenta) {
-    cuentas.add(cuenta);
-    cuenta.setCliente(this);
-}
 
-
-public void eliminarCuenta(CuentaBancaria cuenta) {
-    cuentas.remove(cuenta);
-    cuenta.setCliente(null);
-}
 
     public String getBanco() {
         return banco;
@@ -38,18 +26,6 @@ public void eliminarCuenta(CuentaBancaria cuenta) {
 
     public void setFechaAlta(LocalDate fechaAlta) {
         this.fechaAlta = fechaAlta;
-    }
-
-    public Set<CuentaBancaria> getCuentas() {
-        return cuentas;
-    }
-
-    public void addCuenta(CuentaBancaria cuenta) {
-        this.cuentas.add(cuenta);
-    }
-
-    public void setCuentas(Set<CuentaBancaria> cuentas) {
-        this.cuentas = cuentas;
     }
 
     public long getIdentificador() {

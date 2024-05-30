@@ -74,9 +74,29 @@ public class ClienteInput {
         cliente.setFechaAlta(LocalDate.now());
         System.out.println("Su fecha de alta es: " + cliente.getFechaAlta());
 
-        System.out.println("Ingrese el tipo de persona del cliente (Juridica - Fisica): ");
-        String tipoPersona = scanner.nextLine();
-        cliente.setTipoPersona(tipoPersona);
+        int opcionTipoPersona;
+            do{
+                        System.out.println("Ingrese el nuevo tipo de persona del cliente: ");
+                        System.out.println("0. Salir");
+                        System.out.println("1. Juridica");
+                        System.out.println("2. Fisica");
+                        System.out.println("-------------------------");
+                        opcionTipoPersona = scanner.nextInt();
+                        switch (opcionTipoPersona) {
+                            case 1:
+                            cliente.setTipoPersona("JURIDICA");
+                                break;
+                            
+                            case 2:
+                            cliente.setTipoPersona("FISICA");                                
+
+                            default:
+                                System.out.println("Valor no válido.");
+                                break;
+                        }
+            }
+            while(opcionTipoPersona != 0);
+                        
 
         System.out.println("Cliente creado exitosamente.\n");
 

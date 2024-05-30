@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Random;
 import java.util.Scanner;
 
+
 import tubanco.conexion.ClienteDAO;
 import tubanco.conexion.CuentaBancariaDAO;
 import tubanco.conexion.MovimientosDAO;
@@ -41,9 +42,29 @@ public class CuentaBancariaInput {
         System.out.println("Su número de cuenta es asignado es: " + numeroCuenta);
         cuenta.setNumeroCuenta(numeroCuenta);
 
+        int tipoCuenta;
+        do{
         System.out.println("Ingrese el tipo de cuenta (AHORRO o CORRIENTE):");
-        String tipoCuenta = scanner.nextLine().toUpperCase(); // Convertir a mayúsculas
-        cuenta.setTipoCuenta(CuentaBancaria.TipoCuenta.valueOf(tipoCuenta)); // Asignación de tipo TipoCuenta
+        System.out.println("0. Salir");
+        System.out.println("1. Ahorro");
+        System.out.println("2. Corriente");
+        System.out.println("-------------------------");
+         tipoCuenta = scanner.nextInt();
+
+        switch (tipoCuenta) {
+            case 1:
+                cuenta.setTipoCuenta(CuentaBancaria.TipoCuenta.valueOf("AHORRO"));
+                break;
+        
+            case 2:
+                cuenta.setTipoCuenta(CuentaBancaria.TipoCuenta.valueOf("CORRIENTE"));
+                break;
+            default:
+                System.out.println("Opción no válida.");
+                break;
+        }
+    }
+        while(tipoCuenta != 0);
 
 
         System.out.println("El balance de la cuenta comenzará siendo 0. Si necesita ingresar dinero deposite dinero en su cuenta");
@@ -62,8 +83,10 @@ public class CuentaBancariaInput {
 
         cuentaDAO.crearCuentaBancaria(cuenta);
         return cuenta;
-        }
+        
     }
+}
+
 
     public void eliminarCuenta() {
         CuentaBancariaDAO cuenta = new CuentaBancariaDAO();
@@ -188,9 +211,29 @@ public class CuentaBancariaInput {
                         break;
                     
                     case 3:
-                        System.out.println("Ingrese el nuevo tipo de cuenta: ");
-                        String nuevoTipoCuenta = scanner.nextLine();
-                        cuentaDAO.modificarCuenta(identificador, "Tipo_Cuenta", nuevoTipoCuenta);
+                        int tipoCuenta;
+                        do{
+                        System.out.println("Ingrese el nuevo tipo de cuenta:");
+                        System.out.println("0. Salir");
+                        System.out.println("1. Ahorro");
+                        System.out.println("2. Corriente");
+                        System.out.println("-------------------------");
+                         tipoCuenta = scanner.nextInt();
+            
+                        switch (tipoCuenta) {
+                            case 1:
+                                cuentaDAO.modificarCuenta(identificador, "Tipo_Cuenta", "AHORRO");                                
+                                break;
+                    
+                            case 2:
+                                cuentaDAO.modificarCuenta(identificador, "Tipo_Cuenta", "CORRIENTE");
+                                break;
+                            default:
+                                System.out.println("Opción no válida.");
+                                break;
+                        }
+                        }while(tipoCuenta != 0);
+                        
                         break;
 
                     default:
