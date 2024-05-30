@@ -3,6 +3,7 @@ package tubanco.presentation.inputs;
 import java.util.Scanner;
 
 import tubanco.conexion.ClienteDAO;
+import tubanco.conexion.CuentaBancariaDAO;
 import tubanco.model.Cliente; 
 import java.time.LocalDate;
 
@@ -86,33 +87,69 @@ public class ClienteInput {
     }
 
     public void eliminarCliente() {
-      ClienteDAO clienteDAO = new ClienteDAO();
-      System.out.println("Ingrese el identificador del cliente que desea eliminar: ");
-      int identificador = scanner.nextInt();
-      scanner.nextLine();
-      clienteDAO.borrarCliente(identificador);
+        int opcion;
+      do{
+        System.out.println("\nSi borra el cliente todas sus cuentas se eliminaran!");
+        System.out.println("Si desea eliminarlo seleccione 1.");
+        System.out.println("Si no quiere eliminarlo seleccione 2.");
+        opcion = scanner.nextInt();
+        scanner.nextLine();
+        switch (opcion) {
+            case 1:
+            ClienteDAO clienteDAO = new ClienteDAO();
+            CuentaBancariaDAO cuentaDAO = new CuentaBancariaDAO();
+            System.out.println("Ingrese el identificador del cliente que desea eliminar: ");
+            int identificador = scanner.nextInt();
+            scanner.nextLine();
+            clienteDAO.borrarCliente(identificador);
+            cuentaDAO.borrarTodasLasCuentas(identificador);
+            break;
+            
+            case 2:
+                break;
+            default:
+            System.out.println("ERROR, VOLVER A INTENTAR NUEVAMENTE");
+                break;
+        }
+      }while(opcion != 2);
+      
     }
 
-    public void modificarCliente(int identificador, String atributo) {
+    public void modificarCliente(int identificador) {
         ClienteDAO clienteDAO = new ClienteDAO();
         Cliente clienteAModificar = clienteDAO.obtenerClientePorId(identificador);
-       
+        if (clienteDAO.obtenerClientePorId(identificador) == null) {
+            System.out.println("No existe ningún cliente con el identificador ingresado.");
+            return;
+            
+        }else{
+            int opcion;
+            do{
+            System.out.println("Ingrese el atributo que desea modificar: ");
+            System.out.println("0. Salir");
+            System.out.println("1. Nombre");
+            System.out.println("2. Apellido");
+            System.out.println("3. Fecha de nacimiento");
+            System.out.println("4. Banco");
+            System.out.println("5. Tipo de persona");
+            System.out.println("-------------------------");
+            opcion = scanner.nextInt();
 
-                switch (atributo.toLowerCase()) {
+                switch (opcion) {
 
-                    case "nombre":
+                    case 1:
                         System.out.println("Ingrese el nuevo nombre del cliente: ");
                         String nuevoNombre = scanner.nextLine();
                         clienteDAO.modificarCliente(identificador, "Nombre", nuevoNombre);
                         break;
 
-                    case "apellido":
+                    case 2:
                         System.out.println("Ingrese el nuevo apellido del cliente: ");
                         String nuevoApellido = scanner.nextLine();
                         clienteDAO.modificarCliente(identificador, "Apellido", nuevoApellido);
                         break;
 
-                    case "fechanacimiento":
+                    case 3:
                     LocalDate fechaNacimiento = null;
                     boolean fechaValida = false;
                     while (!fechaValida) {
@@ -120,7 +157,7 @@ public class ClienteInput {
                         String fechaStr = scanner.nextLine();
                         if (validarFormatoFecha(fechaStr)) {
                             LocalDate fechaIngresada = LocalDate.parse(fechaStr);
-                            if (!fechaIngresada.equals(clienteAModificar.getFechaNacimiento())) { // Verifica si la nueva fecha es diferente a la fecha actual
+                            if (!fechaIngresada.equals(clienteAModificar.getFechaNacimiento())) { 
                                 fechaNacimiento = fechaIngresada;
                                 fechaValida = true;
                             } else {
@@ -133,44 +170,45 @@ public class ClienteInput {
                     clienteDAO.modificarCliente(identificador, "Fecha_de_nacimiento", fechaNacimiento.toString());
 
                     break;
-                    case "fechaalta":
-                    LocalDate fechaAlta = null;
-                    boolean fechaValida2 = false;
-                    while (!fechaValida2) {
-                        System.out.println("Ingrese la nueva fecha de alta del cliente (Formato: YYYY-MM-DD): ");
-                        String fechaStr = scanner.nextLine();
-                        if (validarFormatoFecha(fechaStr)) {
-                            LocalDate fechaIngresada = LocalDate.parse(fechaStr);
-                            if (!fechaIngresada.equals(clienteAModificar.getFechaAlta())) { // Verifica si la nueva fecha es diferente a la fecha actual
-                                fechaAlta = fechaIngresada;
-                                fechaValida = true;
-                            } else {
-                                System.out.println("La nueva fecha de alta debe ser diferente a la fecha actual del cliente.");
-                            }
-                        } else {
-                            System.out.println("Formato de fecha inválido. Ingrese la fecha en formato YYYY-MM-DD:");
-                        }
-                    }
-                    clienteDAO.modificarCliente(identificador, "Fecha_de_alta", fechaAlta.toString());
-                    break;
 
-                    case "banco":
+                    case 4:
                         System.out.println("Ingrese el nuevo banco del cliente: ");
                         String nuevoBanco = scanner.nextLine();
                         clienteDAO.modificarCliente(identificador, "Banco", nuevoBanco);
                         break;
                     
-                    case "tipoPersona":
+                    case 5:
+                        int opcionTipoPersona;
+                        do{
                         System.out.println("Ingrese el nuevo tipo de persona del cliente: ");
-                        String nuevoTipoPersona = scanner.nextLine();
-                        clienteDAO.modificarCliente(identificador, "Tipo_de_persona", nuevoTipoPersona);
+                        System.out.println("0. Salir");
+                        System.out.println("1. Juridica");
+                        System.out.println("2. Fisica");
+                        System.out.println("-------------------------");
+                        opcionTipoPersona = scanner.nextInt();
+                        switch (opcionTipoPersona) {
+                            case 1:
+                                clienteDAO.modificarCliente(identificador, "Tipo_de_persona", "JURIDICA");
+                                break;
+                            
+                            case 2:
+                            clienteDAO.modificarCliente(identificador, "Tipo_de_persona", "FISICA");
+                                break;
+
+                            default:
+                                System.out.println("Valor no válido.");
+                                break;
+                        }
+                        }while(opcionTipoPersona != 0);
                         break;
 
                     default:
                         System.out.println("Atributo no válido.");
                         break;
                 }
-            }
+            }while(opcion != 0);
+        }
+    }
         
     
     

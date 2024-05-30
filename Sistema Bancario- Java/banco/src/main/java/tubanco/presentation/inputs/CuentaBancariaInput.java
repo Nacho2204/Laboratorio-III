@@ -1,8 +1,12 @@
 package tubanco.presentation.inputs;
 
 import java.time.LocalDate;
+import java.util.Random;
 import java.util.Scanner;
 
+import tubanco.conexion.ClienteDAO;
+import tubanco.conexion.CuentaBancariaDAO;
+import tubanco.conexion.MovimientosDAO;
 import tubanco.model.*;
 
 
@@ -13,83 +17,202 @@ public class CuentaBancariaInput {
         this.scanner = scanner;
     }
 
-    public CuentaBancaria crearCuentaBancaria(Cliente cliente) {
-        if (cliente.getCuentas() != null && !cliente.getCuentas().isEmpty()) {
-            System.out.println("El cliente ya tiene una cuenta bancaria asociada.");
-            return null; // Opcional: Retornar null para indicar que no se pudo crear la cuenta
-        }
-
+    public CuentaBancaria crearCuentaBancaria(int identificador) {
         CuentaBancaria cuenta = new CuentaBancaria();
+        Random random = new Random();
+        CuentaBancariaDAO cuentaDAO = new CuentaBancariaDAO();
+        ClienteDAO clienteDAO = new ClienteDAO();
 
-        System.out.println("Ingrese el numero de la cuenta: ");
-        int numeroCuenta = scanner.nextInt(); 
+        if (clienteDAO.obtenerClientePorId(identificador) == null) {
+            System.out.println("No existe ningún cliente con el identificador ingresado, por lo tanto no podemos crear una cuenta.");
+            return null;
+            
+        }
+        else{
+
+        int numeroCuenta;
+        boolean numeroUnico;
+
+        do {
+            numeroCuenta = 100000 + random.nextInt(900000); // Genera un número aleatorio entre 100,000 y 1,000,000
+            numeroUnico = !cuentaDAO.numeroDeCuentaExiste(numeroCuenta); // Verifica que el número de cuenta no exista
+        } while (!numeroUnico);
+    
+        System.out.println("Su número de cuenta es asignado es: " + numeroCuenta);
         cuenta.setNumeroCuenta(numeroCuenta);
-
-        scanner.nextLine(); // Consumir la nueva línea pendiente
 
         System.out.println("Ingrese el tipo de cuenta (AHORRO o CORRIENTE):");
         String tipoCuenta = scanner.nextLine().toUpperCase(); // Convertir a mayúsculas
         cuenta.setTipoCuenta(CuentaBancaria.TipoCuenta.valueOf(tipoCuenta)); // Asignación de tipo TipoCuenta
 
+
         System.out.println("El balance de la cuenta comenzará siendo 0. Si necesita ingresar dinero deposite dinero en su cuenta");
+        cuenta.setSaldo(0);
 
-        System.out.println("Ingrese la fecha de creación de la cuenta (Formato: YYYY-MM-DD): ");
-        LocalDate fechaCreacion = null;
-        boolean fechaValida = false;
-        while (!fechaValida) {
-            try {
-                fechaCreacion = LocalDate.parse(scanner.nextLine());
-                fechaValida = true;
-            } catch (Exception e) {
-                System.out.println("Formato de fecha inválido. Ingrese la fecha en formato YYYY-MM-DD:");
-            }
-        }
-        cuenta.setFechaCreacion(fechaCreacion.atStartOfDay()); 
-        cuenta.setTitular(cliente);
-        cliente.addCuenta(cuenta); 
+        
+        cuenta.setFechaCreacion(LocalDate.now());
+        System.out.println("Su fecha de alta es: " + cuenta.getFechaCreacion());
 
+        System.out.println("Ingrese la moneda que va a utilizar: ");
+        String moneda = scanner.nextLine();
+        cuenta.setMoneda(moneda);
+        
+        cuenta.setTitular(identificador);
+        
+
+        cuentaDAO.crearCuentaBancaria(cuenta);
         return cuenta;
+        }
     }
-    public void realizarOperaciones(CuentaBancaria cuenta) {
-        Operacion operacion = new Operacion();
 
+    public void eliminarCuenta() {
+        CuentaBancariaDAO cuenta = new CuentaBancariaDAO();
+        System.out.println("Ingrese el numero de la cuenta que desea eliminar: ");
+        int identificador = scanner.nextInt();
+        scanner.nextLine();
+        cuenta.borrarCuenta(identificador);
+      }
+
+    public void realizarOperaciones(int numeroCuenta) {
+
+        CuentaBancariaDAO cuentaDAO = new CuentaBancariaDAO();
+        MovimientosDAO movimientosDAO = new MovimientosDAO();
+        if (cuentaDAO.obtenerCuentaPorId(numeroCuenta) == null) {
+            System.out.println("No existe ninguna cuenta con el identificador ingresado.");
+            return;
+            
+        }
+        else{
+        
+        
         System.out.println("Seleccione la operación que desea realizar:");
+        System.out.println("0. Salir");
         System.out.println("1. Depósito");
         System.out.println("2. Retiro");
         System.out.println("3. Consulta de saldo");
+        System.out.println("4. Tranferencia");
+        System.out.println("-------------------------");
         int opcion = scanner.nextInt();
 
+        do{
         switch (opcion) {
             case 1:
                 System.out.println("Ingrese el monto a depositar:");
                 double montoDeposito = scanner.nextDouble();
-                operacion.realizarDeposito(cuenta, montoDeposito);
+                
+                cuentaDAO.aumentarSaldo(numeroCuenta, montoDeposito);
+                movimientosDAO.generarDeposito(numeroCuenta, montoDeposito);
                 System.out.println("Depósito realizado exitosamente.");
                 break;
+
             case 2:
                 System.out.println("Ingrese el monto a retirar:");
                 double montoRetiro = scanner.nextDouble();
-                operacion.realizarRetiro(cuenta, montoRetiro);
+
+                cuentaDAO.disminuirSaldo(numeroCuenta, montoRetiro);
+                movimientosDAO.generarRetiro(numeroCuenta, montoRetiro);
                 System.out.println("Retiro realizado exitosamente.");
                 break;
+
             case 3:
-                double saldo = operacion.consultarSaldo(cuenta);
-                System.out.println("Saldo actual: " + saldo);
+                cuentaDAO.consultarSaldo(numeroCuenta);
                 break;
+
+            case 4:
+                System.out.println("Ingrese el número de cuenta a la que desea transferir:");
+                int numeroCuentaDestino = scanner.nextInt();
+
+                if (cuentaDAO.obtenerCuentaPorId(numeroCuentaDestino) == null) {
+                    System.out.println("No se encontro ninguna cuenta con el numero que ingreso.");
+                    break;
+                }
+                else{
+                System.out.println("Ingrese el monto a transferir:");
+                double montoTransferencia = scanner.nextDouble();
+
+                cuentaDAO.transferir(numeroCuenta, numeroCuentaDestino, montoTransferencia);
+                movimientosDAO.generarTransferencia(numeroCuenta, numeroCuentaDestino, montoTransferencia);
+                System.out.println("Transferencia realizada exitosamente.");
+                break;
+                }
+
             default:
                 System.out.println("Opción no válida.");
                 break;
         }
+        }while(opcion != 0);
+    }
     }
 
-    public void mostrarMovimientos(CuentaBancaria cuenta) {
-        System.out.println("Movimientos de la cuenta bancaria:");
+    public void modificarCuenta(int identificador) {
+
+        
+        CuentaBancariaDAO cuentaDAO = new CuentaBancariaDAO();
+        ClienteDAO clienteDAO = new ClienteDAO();
+
+        if (cuentaDAO.obtenerCuentaPorId(identificador) == null) {
+            System.out.println("No existe ninguna cuenta con el identificador ingresado.");
+            return;
+            
+        }else{
+            scanner.nextLine();
+            int opcion;
+            do{
+            System.out.println("Ingrese el atributo que desea modificar: ");
+            System.out.println("0. Salir");
+            System.out.println("1. Titular");
+            System.out.println("2. Moneda");
+            System.out.println("3. TipoCuenta");
+            System.out.println("-------------------------");
+            opcion = scanner.nextInt();
+
+                switch (opcion) {
+                    
+                    case 2:
+                        System.out.println("Ingrese la nueva moneda que quiere que maneje su cuenta: ");
+                        String nuevaMoneda = scanner.nextLine();
+                        cuentaDAO.modificarCuenta(identificador, "Moneda", nuevaMoneda);
+                        break;
+                    
+                    case 1:
+                        System.out.println("Ingrese el nuevo DNI del titular de la cuenta: ");
+                        int nuevoDniTitular = scanner.nextInt();
     
-        for (MovimientoCuenta movimiento : cuenta.getMovimientos()) {
-            System.out.println("Tipo: " + movimiento.getTipoOperacion());
-            System.out.println("Fecha: " + movimiento.getHoraMovimiento());
-            System.out.println("Monto: " + movimiento.getMonto());
-            System.out.println("--------------------------------------");
+                    
+                        if (clienteDAO.obtenerClientePorId(nuevoDniTitular) != null) {
+                        cuentaDAO.modificarCuenta(identificador, "Titular", String.valueOf(nuevoDniTitular));
+                        System.out.println("Titular modificado con éxito.");
+                        } else {
+                        System.out.println("No existe ningún cliente con el DNI ingresado. No se pudo cambiar el titular de la cuenta.");
+                        }
+                        break;
+                    
+                    case 3:
+                        System.out.println("Ingrese el nuevo tipo de cuenta: ");
+                        String nuevoTipoCuenta = scanner.nextLine();
+                        cuentaDAO.modificarCuenta(identificador, "Tipo_Cuenta", nuevoTipoCuenta);
+                        break;
+
+                    default:
+                        System.out.println("Atributo no válido.");
+                        break;
+                    }
+                }while(opcion != 0);
+            }
+    }
+
+    public void mostrarMovimientos(int numeroCuenta) {
+        CuentaBancariaDAO cuentaDAO = new CuentaBancariaDAO();
+        MovimientosDAO movimientosDAO = new MovimientosDAO();
+        if (cuentaDAO.obtenerCuentaPorId(numeroCuenta) == null) {
+            System.out.println("No existe ninguna cuenta con el identificador ingresado.");
+            return;
+            
         }
+        else{
+        movimientosDAO.mostrarMovimientos(numeroCuenta);
+     }    
     }
 }
+
+

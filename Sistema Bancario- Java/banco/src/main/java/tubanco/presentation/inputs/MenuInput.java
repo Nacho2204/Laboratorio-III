@@ -1,8 +1,7 @@
 package tubanco.presentation.inputs;
 import java.util.Scanner;
 
-import tubanco.model.Cliente;
-import tubanco.model.CuentaBancaria;
+
 
 public class MenuInput {
     protected Scanner scanner;
@@ -18,116 +17,92 @@ public class MenuInput {
     public void menuPrincipal() {
         int opcion;
         do {
+            System.out.println("\n--------------------------------------");
             System.out.println("0. Salir");
             System.out.println("1. Crear cliente");
             System.out.println("2. Modificar cliente");
             System.out.println("3. Mostrar cliente");
             System.out.println("4. Eliminar cliente");
             System.out.println("5. Crear cuenta bancaria");
-            System.out.println("6. Realizar operaciones");
-            System.out.println("7. Consultar movimientos");
+            System.out.println("6. Eliminar cuenta bancaria.");
+            System.out.println("7. Modificar cuenta bancaria");
+            System.out.println("8. Realizar operaciones.");
+            System.out.println("9. Consultar movimientos.");
+            System.out.println("--------------------------------------");
             
             System.out.print("Elige una opcion: ");
             opcion = this.scanner.nextInt();
             scanner.nextLine();
 
             switch (opcion) {
+
                 case 0:
                     System.out.println("Saliendo del programa");
                     break;
+
                 case 1:
                     clienteInput.ingresarCliente();
                     break;
-                case 2:
-                System.out.println("Ingrese el identificador del cliente que desea modificar: ");
-                int identificadorClienteModificar = scanner.nextInt();
-                scanner.nextLine();
-            
-                System.out.println("Ingrese el atributo que desea modificar (nombre, apellido, dni, banco, fechaNacimiento, fechaAlta): ");
-                String atributoModificar = scanner.nextLine();
-            
-                clienteInput.modificarCliente(identificadorClienteModificar, atributoModificar);
-                    break;
-                case 3:
-                System.out.println("Ingrese el identificador del cliente que desea mostrar: ");
-                int identificadorClienteMostrar = scanner.nextInt();
-                clienteInput.mostrarCliente(identificadorClienteMostrar);
-                    break;
-                case 4:
 
+                case 2:
+                    System.out.println("Ingrese el identificador del cliente que desea modificar: ");
+                    int identificadorClienteModificar = scanner.nextInt();
+                    scanner.nextLine();
+            
+            
+                    clienteInput.modificarCliente(identificadorClienteModificar);
+                    break;
+
+                case 3:
+                    System.out.println("Ingrese el identificador del cliente que desea mostrar: ");
+                    int identificadorClienteMostrar = scanner.nextInt();
+                    clienteInput.mostrarCliente(identificadorClienteMostrar);
+                    break;
+
+                case 4:
                     clienteInput.eliminarCliente();
                     break;
-                 /*case 5:
+
+                 case 5:
                     System.out.println("Ingrese el identificador del cliente para asociar la cuenta bancaria: ");
                     int identificadorClienteCrearCuenta = scanner.nextInt();
                     scanner.nextLine();
-                    Cliente clienteCrearCuenta = obtenerClientePorIdentificador(identificadorClienteCrearCuenta);
-                    if (clienteCrearCuenta != null) {
-                        cuentaBancariaInput.crearCuentaBancaria(clienteCrearCuenta);
-                    } else {
-                        System.out.println("Cliente no encontrado.");
-                    }
+                    cuentaBancariaInput.crearCuentaBancaria(identificadorClienteCrearCuenta);
                     break;
+
                 case 6:
+                    cuentaBancariaInput.eliminarCuenta();
+                    break;
+
+                case 7:
+                    System.out.println("Ingrese el número de la cuenta que desea modificar: ");
+                    int numeroCuentaModificar = scanner.nextInt();
+                    cuentaBancariaInput.modificarCuenta(numeroCuentaModificar);
+                    break;
+
+                case 8:
                     System.out.println("Ingrese el número de cuenta para realizar operaciones: ");
                     int numeroCuentaOperaciones = scanner.nextInt();
-                    scanner.nextLine();
-                    CuentaBancaria cuentaOperaciones = obtenerCuentaPorNumero(numeroCuentaOperaciones);
-                    if (cuentaOperaciones != null) {
-                        cuentaBancariaInput.realizarOperaciones(cuentaOperaciones);
-                    } else {
-                        System.out.println("Cuenta bancaria no encontrada.");
-                    }
+                    cuentaBancariaInput.realizarOperaciones(numeroCuentaOperaciones);
                     break;
-               case 7:
-                System.out.println("Ingrese el número de cuenta para consultar movimientos: ");
-                int numeroCuentaConsultar = scanner.nextInt();
-                scanner.nextLine();
-            
-               
-                CuentaBancaria cuentaConsultar = null;
-                for (Cliente cliente : ClienteInput.getClientes()) {
-                    for (CuentaBancaria cuenta : cliente.getCuentas()) {
-                        if (cuenta.getNumeroCuenta() == numeroCuentaConsultar) {
-                            cuentaConsultar = cuenta;
-                            break;
-                        }
-                    }
-                    if (cuentaConsultar != null) {
-                        break;
-                    }
-                }
-            
-                if (cuentaConsultar != null) {
-                    
-                    cuentaBancariaInput.mostrarMovimientos(cuentaConsultar);
-                } else {
-                    System.out.println("No se encontró ninguna cuenta con el número especificado.");
-                }
+
+                case 9:
+                    System.out.println("Ingrese el número de cuenta para consultar movimientos: ");
+                    int numeroCuentaConsultar = scanner.nextInt();
+                    cuentaBancariaInput.mostrarMovimientos(numeroCuentaConsultar);
                     break;
+
                 default:
                     System.out.println("ERROR, VOLVER A INTENTAR NUEVAMENTE");
                     break;
-            }*/ 
+            
             }
 
         } while (opcion != 0);
     }
 
-    // Método para obtener un cliente por su identificador
 
     
-   /*  private CuentaBancaria obtenerCuentaPorNumero(int numeroCuenta) {
-        for (Cliente cliente : ClienteInput.getClientes()) {
-            for (CuentaBancaria cuenta : cliente.getCuentas()) {
-                if (cuenta.getNumeroCuenta() == numeroCuenta) {
-                    return cuenta;
-                }
-            }
-        }
-        return null;
-    }
-*/
     public Scanner getScanner() {
         return scanner;
     }

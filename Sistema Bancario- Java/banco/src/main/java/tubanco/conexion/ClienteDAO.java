@@ -80,7 +80,7 @@ public class ClienteDAO {
         }
     }
 
-     public Cliente obtenerClientePorId(int identificador) {
+    public Cliente obtenerClientePorId(int identificador) {
         Cliente cliente = null;
         Connection conexion = null;
         PreparedStatement statement = null;
@@ -109,7 +109,7 @@ public class ClienteDAO {
         return cliente;
     }
 
-        public void mostrarCliente(int identificador){
+    public void mostrarCliente(int identificador){
             Connection conexion = null;
             PreparedStatement statement = null;
 

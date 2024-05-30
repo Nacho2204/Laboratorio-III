@@ -1,8 +1,7 @@
 package tubanco.model;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+
 
 public class CuentaBancaria {
 
@@ -12,13 +11,12 @@ public class CuentaBancaria {
     }
     protected Cliente cliente;
     protected String nombre;
-    protected LocalDateTime fechaCreacion;
+    protected LocalDate fechaCreacion;
     protected TipoCuenta tipoCuenta;
     protected int saldo;
     protected int numeroCuenta;
     protected String moneda;
-    private List<MovimientoCuenta> movimientos=new ArrayList<>();
-    private Cliente titular;
+    private long titular;
 
 
 
@@ -31,11 +29,11 @@ public class CuentaBancaria {
         return this;
     }
 
-    public LocalDateTime getFechaCreacion() {
+    public LocalDate getFechaCreacion() {
         return fechaCreacion;
     }
 
-    public CuentaBancaria setFechaCreacion(LocalDateTime fechaCreacion) {
+    public CuentaBancaria setFechaCreacion(LocalDate fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
         return this;
     }
@@ -73,17 +71,6 @@ public class CuentaBancaria {
         this.tipoCuenta = tipoCuenta;
     }
 
-    public List<MovimientoCuenta> getMovimientos() {
-        return movimientos;
-    }
-
-    public void setMovimientos(List<MovimientoCuenta> movimientos) {
-        this.movimientos = movimientos;
-    }
-
-    public void agregarMovimiento(MovimientoCuenta movimiento) {
-        movimientos.add(movimiento);
-    }
 
     public String getMoneda() {
         return moneda;
@@ -93,11 +80,11 @@ public class CuentaBancaria {
         this.moneda = moneda;
     }
 
-    public Cliente getTitular() {
+    public long getTitular() {
         return titular;
     }
 
-    public void setTitular(Cliente titular) {
+    public void setTitular(long titular) {
         this.titular = titular;
     }
 }
