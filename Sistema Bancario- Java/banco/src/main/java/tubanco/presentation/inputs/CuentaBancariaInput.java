@@ -39,17 +39,17 @@ public class CuentaBancariaInput {
             numeroUnico = !cuentaDAO.numeroDeCuentaExiste(numeroCuenta); // Verifica que el número de cuenta no exista
         } while (!numeroUnico);
     
-        System.out.println("Su número de cuenta es asignado es: " + numeroCuenta);
+        System.out.println("Su número de cuenta asignado es: " + numeroCuenta);
         cuenta.setNumeroCuenta(numeroCuenta);
 
         int tipoCuenta;
         do{
         System.out.println("Ingrese el tipo de cuenta (AHORRO o CORRIENTE):");
-        System.out.println("0. Salir");
         System.out.println("1. Ahorro");
         System.out.println("2. Corriente");
         System.out.println("-------------------------");
          tipoCuenta = scanner.nextInt();
+         scanner.nextLine();
 
         switch (tipoCuenta) {
             case 1:
@@ -63,16 +63,16 @@ public class CuentaBancariaInput {
                 System.out.println("Opción no válida.");
                 break;
         }
-    }
-        while(tipoCuenta != 0);
+    }while(tipoCuenta != 1 && tipoCuenta != 2);
+        
 
 
-        System.out.println("El balance de la cuenta comenzará siendo 0. Si necesita ingresar dinero deposite dinero en su cuenta");
-        cuenta.setSaldo(0);
+    System.out.println("\nEl balance de la cuenta comenzará siendo 0. Si necesita ingresar dinero deposite dinero en su cuenta");
+    cuenta.setSaldo(0);
 
         
         cuenta.setFechaCreacion(LocalDate.now());
-        System.out.println("Su fecha de alta es: " + cuenta.getFechaCreacion());
+        System.out.println("\nSu fecha de alta es: " + cuenta.getFechaCreacion());
 
         System.out.println("Ingrese la moneda que va a utilizar: ");
         String moneda = scanner.nextLine();
@@ -214,7 +214,6 @@ public class CuentaBancariaInput {
                         int tipoCuenta;
                         do{
                         System.out.println("Ingrese el nuevo tipo de cuenta:");
-                        System.out.println("0. Salir");
                         System.out.println("1. Ahorro");
                         System.out.println("2. Corriente");
                         System.out.println("-------------------------");
@@ -232,7 +231,7 @@ public class CuentaBancariaInput {
                                 System.out.println("Opción no válida.");
                                 break;
                         }
-                        }while(tipoCuenta != 0);
+                        }while(tipoCuenta != 1 && tipoCuenta != 2);
                         
                         break;
 

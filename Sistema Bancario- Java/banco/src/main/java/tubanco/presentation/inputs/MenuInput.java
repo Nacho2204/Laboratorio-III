@@ -64,7 +64,7 @@ public class MenuInput {
                     break;
 
                  case 5:
-                    System.out.println("Ingrese el identificador del cliente para asociar la cuenta bancaria: ");
+                    System.out.println("Ingrese el identificador del cliente para crear una nueva cuenta bancaria: ");
                     int identificadorClienteCrearCuenta = scanner.nextInt();
                     scanner.nextLine();
                     cuentaBancariaInput.crearCuentaBancaria(identificadorClienteCrearCuenta);

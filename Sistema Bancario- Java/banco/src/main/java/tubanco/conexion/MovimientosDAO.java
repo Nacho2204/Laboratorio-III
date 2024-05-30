@@ -3,10 +3,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import tubanco.model.CuentaBancaria;
 
 public class MovimientosDAO {
     
@@ -24,7 +22,6 @@ public class MovimientosDAO {
             statement.setInt(4, cuenta);
             statement.executeUpdate();
             conexion.commit();
-            System.out.println("Deposito realizado con éxito.");
         } catch (SQLException e) {
             System.out.println("Error al realizar el deposito: " + e.getMessage());
         }
