@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
+import tubanco.conexion.sql.ConexionSQLite;
+
 
 public class MovimientosDAO {
     
@@ -41,11 +43,12 @@ public class MovimientosDAO {
             statement.setInt(4, cuenta);
             statement.executeUpdate();
             conexion.commit();
-            System.out.println("Retiro realizado con éxito.");
         } catch (SQLException e) {
-            System.out.println("Error al realizar el retiro: " + e.getMessage());
+            System.out.println("Error al realizar el retiro, no tiene el saldo suficiente.");
+
         }
     }
+    
 
     public void generarTransferencia(int cuentaOrigen, int cuentaDestino, double monto){
         Connection conexion = null;
@@ -68,7 +71,6 @@ public class MovimientosDAO {
             statement.setDouble(3, monto);
             statement.setInt(4, cuentaDestino);
             conexion.commit();
-            System.out.println("Transferencia realizada con éxito.");
         } catch (SQLException e) {
             System.out.println("Error al realizar la transferencia: " + e.getMessage());
         }

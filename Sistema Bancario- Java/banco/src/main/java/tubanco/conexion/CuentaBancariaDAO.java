@@ -1,5 +1,6 @@
 package tubanco.conexion;
 
+import tubanco.conexion.sql.ConexionSQLite;
 import tubanco.model.CuentaBancaria;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -158,28 +159,39 @@ public class CuentaBancariaDAO {
             statement.setInt(2, identificador);
             statement.executeUpdate();
             conexion.commit();
-
+            System.out.println("Deposito generado con exito.");
             
         } catch (SQLException e) {
          System.out.println("Error al aumentar el saldo: " + e.getMessage());
         }
         }
 
-        public void disminuirSaldo(int identificador, double monto) {
+        public boolean disminuirSaldo(int identificador, double monto) {
         Connection conexion = null;
         PreparedStatement statement = null;
+        boolean exito = false;
         try{
             conexion = ConexionSQLite.obtenerConexion();
             conexion.setAutoCommit(false);
-            String query = "UPDATE Cuenta SER Saldo = Saldo - ? WHERE cuentaID = ?";
+            String query = "UPDATE Cuenta SET Saldo = Saldo - ? WHERE cuentaID = ? AND Saldo >= ?";
             statement = conexion.prepareStatement(query);
             statement.setDouble(1, monto);
             statement.setInt(2, identificador);
-            statement.executeUpdate();
-            conexion.commit();
+            statement.setDouble(3,monto);
+            int filasAfectadas = statement.executeUpdate();
+                if (filasAfectadas > 0) {
+                conexion.commit();
+                System.out.println("Retiro realizado con éxito.");
+                exito = true;
+            } else {
+                conexion.rollback();
+                System.out.println("Error al retirar, no tiene el saldo suficiente para el monto que quiere retirar.");
+                }
         }catch (SQLException e){
-            System.out.println("Error al disminuir el saldo: " + e.getMessage());
+            System.out.println("Error al retirar: " + e.getMessage());
+            
         }
+        return exito;
         }
 
         public void consultarSaldo(int identificador) {

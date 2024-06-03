@@ -117,24 +117,39 @@ public class CuentaBancariaInput {
         System.out.println("-------------------------");
         int opcion = scanner.nextInt();
 
-        do{
+        
         switch (opcion) {
+            case 0:
+                System.out.println("Salio del menu de operaciones.");
+                break;
+
             case 1:
                 System.out.println("Ingrese el monto a depositar:");
                 double montoDeposito = scanner.nextDouble();
-                
+                if (montoDeposito<=0 || montoDeposito >= 1000000) {
+                    System.out.println("El monto a depositar debe ser mayor a $0 y el limite a depositar es de $1000000.");
+                }
+                else{
                 cuentaDAO.aumentarSaldo(numeroCuenta, montoDeposito);
                 movimientosDAO.generarDeposito(numeroCuenta, montoDeposito);
-                System.out.println("Depósito realizado exitosamente.");
+                }
                 break;
 
             case 2:
                 System.out.println("Ingrese el monto a retirar:");
                 double montoRetiro = scanner.nextDouble();
+                boolean exitoso = cuentaDAO.disminuirSaldo(numeroCuenta, montoRetiro);
 
-                cuentaDAO.disminuirSaldo(numeroCuenta, montoRetiro);
-                movimientosDAO.generarRetiro(numeroCuenta, montoRetiro);
-                System.out.println("Retiro realizado exitosamente.");
+                if (montoRetiro<=0) {
+                    System.out.println("El monto a retirar debe ser mayor a $0.");
+                }
+                else if (exitoso) {
+                    cuentaDAO.disminuirSaldo(numeroCuenta, montoRetiro);
+                    movimientosDAO.generarRetiro(numeroCuenta, montoRetiro);
+                }
+                else{
+                    System.out.println("No se pudo realizar el retiro.");
+                }
                 break;
 
             case 3:
@@ -144,28 +159,38 @@ public class CuentaBancariaInput {
             case 4:
                 System.out.println("Ingrese el número de cuenta a la que desea transferir:");
                 int numeroCuentaDestino = scanner.nextInt();
+                double montoTransferencia;
 
+                boolean exitosoTransferencia = cuentaDAO.disminuirSaldo(numeroCuenta, 0);
                 if (cuentaDAO.obtenerCuentaPorId(numeroCuentaDestino) == null) {
                     System.out.println("No se encontro ninguna cuenta con el numero que ingreso.");
                     break;
                 }
-                else{
-                System.out.println("Ingrese el monto a transferir:");
-                double montoTransferencia = scanner.nextDouble();
-
-                cuentaDAO.transferir(numeroCuenta, numeroCuentaDestino, montoTransferencia);
-                movimientosDAO.generarTransferencia(numeroCuenta, numeroCuentaDestino, montoTransferencia);
-                System.out.println("Transferencia realizada exitosamente.");
-                break;
+                else {
+                    System.out.println("Ingrese el monto a transferir:");
+                    montoTransferencia = scanner.nextDouble();
                 }
 
-            default:
-                System.out.println("Opción no válida.");
+                if (montoTransferencia<=0 || montoTransferencia >= 1000000) {
+                    System.out.println("El monto a transferir debe ser mayor a $0 y tiene un limite de $1000000.");
+                }
+                else if (exitosoTransferencia) {
+                    cuentaDAO.transferir(numeroCuenta, numeroCuentaDestino, montoTransferencia);
+                    movimientosDAO.generarTransferencia(numeroCuenta, numeroCuentaDestino, montoTransferencia);
+                }
+                else{
+                    System.out.println("No se pudo realizar la transferencia.");
+                }
                 break;
+
+                default:
+                    System.out.println("Opción no válida.");
+                    break;
+            }
         }
-        }while(opcion != 0);
+        
     }
-    }
+    
 
     public void modificarCuenta(int identificador) {
 

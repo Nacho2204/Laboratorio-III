@@ -1,4 +1,4 @@
-package tubanco.conexion;
+package tubanco.conexion.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
